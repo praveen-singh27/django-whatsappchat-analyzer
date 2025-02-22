@@ -1,23 +1,22 @@
-# Django
+# 📊 WhatsApp Chat Analysis Dashboard 🚀
 
-# WhatsApp Chat Analysis Dashboard
+## 🔥 Overview
+This project is a **WhatsApp Chat Analysis Dashboard** built using **Django** as the backend. It features a **secure login system**, **interactive data visualizations with Chart.js**, and **AJAX for dynamic data fetching** without page reloads.
 
-## 📌 Project Overview
-This project is a **WhatsApp Chat Analysis Dashboard** built with **Django, Streamlit, and Chart.js**. It allows users to upload their WhatsApp chat files and visualize various statistics, including message trends, user activity, and emoji usage.
+## 🛠️ Features
+- 🔐 **User Authentication**: Secure login system for dashboard access.
+- 📊 **Interactive Charts**: Uses **Chart.js** for visualizing WhatsApp chat data.
+- ⚡ **AJAX Integration**: Fetches chat data dynamically without refreshing the page.
+- 📂 **Chat Data Processing**: Extracts insights like **total messages, media shared, most active users, and word frequencies**.
+- 📅 **Activity Analysis**: Daily, monthly, and weekly chat trends.
+- 😂 **Emoji Usage Insights**: Detects and visualizes emojis used in conversations.
 
-## ✨ Features
-- 📂 **Upload WhatsApp Chat File** (TXT format)
-- 📊 **Data Processing & Analysis**
-- 📈 **Visualizations with Chart.js & Matplotlib**
-- 🔥 **User Activity Insights** (Most active users, busiest days)
-- 🎨 **Word Cloud & Emoji Analysis**
-- 📅 **Daily & Monthly Message Trends**
-- 🕵️ **Data Filtering by User**
-
-## 🏗️ Tech Stack
-- **Backend:** Django (Python), Pandas
-- **Frontend:** Streamlit, Chart.js, Bootstrap
-- **Data Visualization:** Matplotlib, Seaborn
+## 🏢 Tech Stack
+- **Backend**: Django (Python) 🐍
+- **Frontend**: HTML, CSS, JavaScript 🎨
+- **Charts**: Chart.js 📊
+- **Database**: SQLite / PostgreSQL 👖
+- **AJAX**: Fetch chat data dynamically ⚡
 
 ## 🚀 Installation & Setup
 
@@ -30,7 +29,7 @@ cd whatsapp-chat-analysis
 ### 2️⃣ Create a Virtual Environment
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # On Windows use: venv\Scripts\activate
 ```
 
 ### 3️⃣ Install Dependencies
@@ -38,53 +37,55 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 4️⃣ Run the Django Server
+### 4️⃣ Apply Migrations & Run Server
 ```bash
+python manage.py migrate
 python manage.py runserver
 ```
+Access the dashboard at **http://127.0.0.1:8000/** 🚀
 
-### 5️⃣ Run the Streamlit App
-```bash
-streamlit run app.py
-```
+## 🔐 Login System
+- Default credentials:
+  - **Username**: `admin`
+  - **Password**: `yourpassword`
+- To create a new superuser:
+  ```bash
+  python manage.py createsuperuser
+  ```
 
-## 🛠️ How to Use
-1. **Upload your WhatsApp chat file** via the Streamlit interface.
-2. Select a user to analyze (or choose "Overall").
-3. View various analytics, including:
-   - **Total Messages, Words, Media, Links**
-   - **Most Active Users & Message Trends**
-   - **Activity Heatmap**
-   - **Emoji Analysis**
-4. **Charts Update Dynamically** with data from Django API.
+## 📰 API Endpoint for Chat Data
+The chat data is fetched dynamically via AJAX from:
 
-## 📜 API Endpoints
-| Endpoint       | Method | Description |
-|---------------|--------|-------------|
-| `/chat-data/` | GET    | Returns processed chat data as JSON |
-| `/charts/`    | GET    | Renders the Chart.js dashboard |
 
-## 📸 Screenshots
-_(Add screenshots of your dashboard UI here)_
+## 📊 Dashboard Features
 
-## 📌 Future Enhancements
-- 📊 **More Chart Types** (Pie, Line, Histogram)
-- 📥 **Export Reports** (CSV/PDF)
-- 🤖 **Sentiment Analysis**
-- 📡 **Live Data Updates**
+### ✅ Total Messages, Words, Media & Links Shared
+Displays **total chat statistics** in a structured format.
 
-## 🤝 Contributing
-Pull requests are welcome! For major changes, please open an issue first to discuss your ideas.
+### ✅ Charts & Visualizations
+- **Bar Chart**: User-wise message distribution 📊
+- **Line Charts**: Daily & monthly activity trends 📈
+- **Heatmap**: Weekly activity analysis 🔥
+- **Pie Chart**: Emoji distribution 😂
 
-## 📜 License
-This project is open-source and available under the **MIT License**.
+### ✅ Most Active Users
+Identifies the top contributors in group chats.
+
+### ✅ Most Common Words
+Finds the most frequently used words (excluding stopwords).
+
+## 🚀 Future Enhancements
+- 📌 Export chat analysis reports as **PDF**.
+- 📌 More **chart types** for deeper insights.
+- 📌 Sentiment analysis of messages using **NLP**.
+
+## 💖 Contributing
+Feel free to **fork** the repo, **submit issues**, or **contribute**! PRs are always welcome! 🚀
+
+## 🐟 License
+This project is licensed under the **MIT License**.
 
 ---
-### 📧 Contact
-💡 If you have any questions, feel free to reach out!
 
-📩 Email: yourname@example.com  
-🔗 GitHub: [github.com/yourusername](https://github.com/yourusername)
-
-
+🔹 **Made with ❤️ using Django & JavaScript** 🔹
 
