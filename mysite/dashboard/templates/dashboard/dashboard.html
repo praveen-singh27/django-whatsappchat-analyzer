@@ -1,0 +1,12 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block content %}
+
+{% if request.session.customer_id %}
+<div class="h1">This is my dashboard!! </div>
+{% else %}
+<div class="h1"> Please Login Again!! </div>
+{% endif %}
+
+{% endblock %}

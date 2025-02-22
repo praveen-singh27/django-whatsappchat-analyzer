@@ -1,0 +1,10 @@
+{% extends "analysis/base.html" %}
+{% load static %}
+
+{% block content %}
+
+{% if request.session.customer_id %}
+        <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+    {% endif %}
+
+{% endblock %}
