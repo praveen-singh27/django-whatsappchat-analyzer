@@ -13,9 +13,9 @@ This project is a **WhatsApp Chat Analysis Dashboard** built using **Django** as
 
 ## 🏢 Tech Stack
 - **Backend**: Django (Python) 🐍
-- **Frontend**: HTML, CSS, JavaScript 🎨
+- **Frontend**: HTML, CSS, JavaScript, Bootstrap 🎨
 - **Charts**: Chart.js 📊
-- **Database**: SQLite / PostgreSQL 👖
+- **Database**: SQLite 👖
 - **AJAX**: Fetch chat data dynamically ⚡
 
 ## 🚀 Installation & Setup
