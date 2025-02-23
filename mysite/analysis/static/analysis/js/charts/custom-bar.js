@@ -27,7 +27,7 @@ function number_format(number, decimals, dec_point, thousands_sep) {
   return s.join(dec);
 }
 
-fetch('/dashboard/chat-data/')  // Replace with the correct Django URL
+fetch('/dashboard/chat-data/')  // Hit the 'chat-data' url which will return the dataset.
     .then(response => response.json())
     .then(chatData => {
         var ctx = document.getElementById("mycustomBarChart");

@@ -4,7 +4,8 @@
 {% block content %}
 
 {% if request.session.customer_id %}
-        <div class="h1">This is tables page </div>
+        <!-- Custom Page Heading -->
+    {% block page_heading %} Tables {% endblock %}
 {% else %}
         <div class="h1"> Please Login Again!! </div>
 {% endif %}

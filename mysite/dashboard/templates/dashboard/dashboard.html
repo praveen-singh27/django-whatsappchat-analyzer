@@ -4,7 +4,134 @@
 {% block content %}
 
 {% if request.session.customer_id %}
-<div class="h1">This is my dashboard!! </div>
+
+<!-- Content Row -->
+<div class="row">
+
+    <!-- Links Shared Card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Links Shared</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ links_shared }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Words Card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Total Words </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_words }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Media Shared Card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Media Shared
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ media_shared }}</div>
+                            </div>                            
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Messages Card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Total Messages</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_messages }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-comments fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Content Row -->
+
+<!-- Display success message -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+<!-- Upload Form -->
+<div class="card shadow-lg p-4">
+    <h3 class="text-primary mb-3"><i class="fas fa-upload"></i> Upload WhatsApp Chat</h3>
+    <form id="upload-form" action="{% url 'get-stats' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="chatFile" class="form-label">Choose a WhatsApp Chat File (.txt)</label>
+            <!-- name we can access in views.py -->
+            <input class="form-control form-control-lg" type="file" id="chatFile" name="chatFile">
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg w-100"><i class="fas fa-chart-line"></i> Upload </button>
+    </form>
+</div>
+
+
+<!-- User Selection (Dropdown appears after file upload) -->
+{% if users %}
+<div class="mt-4">
+    <label for="userSelect" class="form-label"><strong>Select User:</strong></label>
+    <form method="POST" action="{% url 'get-stats' %}">
+        {% csrf_token %}
+        <select class="form-select form-select-lg" id="userSelect" name="selected_user">
+            {% for user in users %}
+                <option value="{{ user }}">{{ user }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-success btn-lg mt-3 w-100"><i class="fas fa-eye"></i> Show Analysis</button>
+    </form>
+</div>
+{% endif %}
+
+              
+
 {% else %}
 <div class="h1"> Please Login Again!! </div>
 {% endif %}
