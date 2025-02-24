@@ -9,5 +9,8 @@ urlpatterns = [
     path('chat-data/', views.chat_data_api, name='chat_data_api'),
     path('get-stats/', views.get_stats, name="get-stats"),
     path('monthly-timeline/', views.monthly_timeline_api, name='monthly-timeline'),
+    path('daily-timeline/', views.daily_timeline_api, name='daily-timeline'),
+    path('busy-day/', views.busy_day_api, name='busy-day'),
+    path('busy-month/', views.busy_month_api, name='busy-month'),
 
 ]
