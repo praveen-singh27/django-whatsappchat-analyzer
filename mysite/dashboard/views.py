@@ -7,14 +7,64 @@ from django.http import JsonResponse
 from . import preprocess, helper
 import pandas as pd
 from django.contrib import messages
+from .charts import get_monthly_timeline 
+
+def monthly_timeline_api(request):
+    """API for monthly timeline chart using selected_user from session"""
+
+    # 🟢 Retrieve selected user from session (via context processor)
+    selected_user = request.session.get("selected_user", "Overall")  # Default to "Overall"
+
+    # 🟢 Retrieve chat data from session
+    chat_data_json = request.session.get("chat_data")
+
+    # ✅ Convert JSON to DataFrame
+    df = pd.read_json(chat_data_json)
+
+    # 🔍 Debugging: Print the first few rows
+    print("🚀 Selected User:", selected_user)
+    print("🚀 DataFrame:\n", df.head())
+    print("🚀 Columns:", df.columns)
+
+    # ✅ Pass DataFrame to timeline function
+    timeline_data = get_monthly_timeline(selected_user, df)  
+
+    # 🔍 Debugging: Check returned data
+    print("🔍 Timeline Data:\n", timeline_data)
+    print("Timeline Data Type:\n", type(timeline_data))
+
+    # ✅ Structure data for JSON response
+    data = {
+        "labels": timeline_data["time"].tolist(),  # X-axis: Months
+        "messages": timeline_data["message_count"].tolist()  # Y-axis: Message counts
+    }
+    print("JSON Data:\n", data)
+    # ✅ Return data as JSON
+    return JsonResponse(data)
 
 def dashboard(request):
-    response = render(request, 'dashboard/dashboard.html')
-    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'  # Prevents caching
+    context = {}
+
+    # Check if chat data exists in session (so that page remains same after refresh)
+    chat_data_json = request.session.get("chat_data")
+    if chat_data_json:
+        df = pd.read_json(chat_data_json)
+        users = request.session.get("users", [])
+        selected_user = request.session.get("selected_user")
+        stats = request.session.get("session_stats", {})
+
+        context.update({
+            "users": users,
+            "selected_user": selected_user,
+        })
+        context.update(stats)  # Load stored stats
+
+    response = render(request, 'dashboard/dashboard.html', context)
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response['Pragma'] = 'no-cache'
     response['Expires'] = '0'
-
     return response
+
 
 
 def logout_view(request):
@@ -24,6 +74,7 @@ def logout_view(request):
 
 def charts(request):
     return render(request, 'dashboard/charts.html')
+
 
 def chat_data_api(request):
     data = {
@@ -42,7 +93,7 @@ def get_stats(request):
 
     if request.method == "POST":
         if "chatFile" in request.FILES:
-            messages.success(request, " ✅ WhatsApp Chat File Uploaded Successfully!")
+            messages.success(request, " ✅ WhatsApp Chat File Uploaded Successfully! ")
             # Handle file upload
             chat_file = request.FILES["chatFile"]
             data = chat_file.read().decode("utf-8")  # Read file content
@@ -61,22 +112,37 @@ def get_stats(request):
 
         elif "selected_user" in request.POST:
             # Handle user selection from dropdown
-            selected_user = request.POST["selected_user"]
+            selected_user = request.POST.get("selected_user", request.session.get("selected_user"))
+            request.session["selected_user"] = selected_user  # Store in session
+
+            
             df = pd.read_json(request.session.get("chat_data"))  # Retrieve session data
 
             # Fetch chat statistics using helper functions
             num_messages, words, num_media_messages, num_links = helper.fetch_stats(selected_user, df)
 
-            # Retrieve users from session so dropdown persists
-            users = request.session.get("users", [])
-
-            context.update({
+            stats = {
                 "selected_user": selected_user,
-                "users": users,  # Ensure users dropdown is retained
                 "total_messages": num_messages,
                 "total_words": words,
                 "media_shared": num_media_messages,
                 "links_shared": num_links,
-            })
+            }
+            
+             # Store stats in session so they persist
+            request.session["session_stats"] = stats
+
+            # Retrieve users from session so dropdown persists
+            users = request.session.get("users", [])
+
+            context.update(stats)
+            context["users"] = users 
+
+    # Retrieve existing stats from session if available (to persist after refresh)
+    elif "session_stats" in request.session:
+        context.update(request.session.get("session_stats", {}))
+        context["selected_user"] = request.session.get("selected_user", "Overall")  # Default to "Overall"
+
+        context["users"] = request.session.get("users", [])  # Ensure users dropdown persists
 
     return render(request, "dashboard/dashboard.html", context)

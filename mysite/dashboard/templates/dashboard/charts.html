@@ -14,6 +14,20 @@
 
     <div class="col-xl-8 col-lg-7">
 
+        <!-- Monthly Timeline Chart -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Monthly Timeline</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-bar">
+                    <canvas id="monthlyTimelineChart"></canvas>
+                </div>
+                <hr>                 
+                <code>Selected user is : {{ selected_user }}</code>
+            </div>
+        </div>
+
         <!-- Area Chart -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
@@ -58,6 +72,8 @@
                 <code>/js/demo/custome-bar.js</code> file.
             </div>
         </div>
+
+        
 
     </div>
 
