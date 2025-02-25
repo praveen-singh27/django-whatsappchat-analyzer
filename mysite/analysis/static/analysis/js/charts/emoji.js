@@ -4,7 +4,9 @@ fetch('/dashboard/emojis/')
     .then(emojiData => {
         var ctx = document.getElementById("emojipiechart").getContext("2d");
 
-        new Chart(ctx, {
+        // We instantiate a new Chart instance and provide two arguments: 
+        // the canvas element where the chart would be rendered and the options object.
+        new Chart(ctx, {          
             type: "doughnut",
             data: {
                 labels: emojiData.emoji,  // Use emoji as labels

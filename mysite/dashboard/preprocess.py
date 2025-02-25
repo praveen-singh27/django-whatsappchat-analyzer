@@ -51,6 +51,7 @@ def preprocess(data):
     df['period'] = period
 
     return df
+
 '''
 
 #  IOS USERS
@@ -94,6 +95,5 @@ def preprocess(data):
     df['period'] = df['hour'].apply(lambda h: f"{h}-{h+1 if h < 23 else 0}")
 
     return df
-
 
 
