@@ -12,5 +12,7 @@ urlpatterns = [
     path('daily-timeline/', views.daily_timeline_api, name='daily-timeline'),
     path('busy-day/', views.busy_day_api, name='busy-day'),
     path('busy-month/', views.busy_month_api, name='busy-month'),
-
+    path('weekly-heatmap/', views.weekly_heatmap_api, name='weekly-heatmap'),
+    path('common-words/', views.common_words_api, name='common-words'),
+    path('emojis/', views.emoji_api, name='emojis'),
 ]

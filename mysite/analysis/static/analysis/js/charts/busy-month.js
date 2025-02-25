@@ -1,11 +1,10 @@
-
 // Fetch data from the 'monthly-timeline' API
-fetch('/dashboard/monthly-timeline/')
+fetch('/dashboard/busy-month/')
     .then(response => response.json())
     .then(timelineData => {
-        var ctx = document.getElementById("monthlyTimelineChart");
+        var ctx = document.getElementById("busyMonthBarChart");
         var myBarChart = new Chart(ctx, {
-            type: 'line',
+            type: 'bar',
             data: {
                 labels: timelineData.labels,  // Months (e.g., "October-2024")
                 datasets: [{

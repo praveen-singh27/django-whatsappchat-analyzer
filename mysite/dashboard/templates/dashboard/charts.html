@@ -42,7 +42,7 @@
             </div>
         </div>
 
-        <!-- Bar Chart -->
+        <!-- Busy Day Bar Chart -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Most Busy Day</h6>
@@ -54,25 +54,60 @@
                 <hr>
                 <code>Selected user is : {{ selected_user }}</code>
             </div>
-        </div>
-        
+        </div>        
 
-         <!-- Custom Bar Chart -->
+         <!-- Busy Month Bar Chart -->
          <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Custom Bar Chart</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Most Busy Month</h6>
             </div>
             <div class="card-body">
                 <div class="chart-bar">
-                    <canvas id="mycustomBarChart"></canvas>
+                    <canvas id="busyMonthBarChart"></canvas>
                 </div>
                 <hr>                 
-                Styling for the bar chart can be found in the
-                <code>/js/demo/custome-bar.js</code> file.
+                <code>Selected user is : {{ selected_user }}</code>
             </div>
         </div>
 
+         <!-- Weekly Stacked Bar Chart -->
+         <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Weekly Activity Map</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-bar">
+                    <canvas id="stackedBarChart"></canvas>
+                </div>
+                <hr>                 
+                <code>Selected user is : {{ selected_user }}</code>
+            </div>
+        </div>
         
+        <!-- Common Words Bar Chart -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Most Common Words</h6>
+                <!-- Bootstrap Styled Select Dropdown -->
+                <div class="form-group mb-0">
+                    <label for="wordCountFilter" class="mb-0 text-muted small">Show top:</label>
+                    <select id="wordCountFilter" class="form-control form-control-sm">
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="chart-bar">
+                    <canvas id="commonWordsChart"></canvas>
+                </div>
+                <hr>
+                <code>Selected user is : {{ selected_user }}</code>
+            </div>
+        </div>
+
 
     </div>
 
@@ -84,16 +119,15 @@
         <div class="card shadow mb-4">
             <!-- Card Header - Dropdown -->
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Radar Chart</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Top Emoji Analysis</h6>
             </div>
             <!-- Card Body -->
             <div class="card-body">
                 <div class="chart-pie pt-4">
-                    <canvas id="myRadarChart"></canvas>
+                    <canvas id="emojipiechart"></canvas>
                 </div>
                 <hr>
-                Styling for the radar chart can be found in the
-                <code>/js/demo/chart-radar.js</code> file.
+                <code>Selected user is : {{ selected_user }}</code>
             </div>
         </div>
 

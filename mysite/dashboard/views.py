@@ -7,7 +7,67 @@ from django.http import JsonResponse
 from . import preprocess, helper
 import pandas as pd
 from django.contrib import messages
-from .charts import get_monthly_timeline, get_daily_timeline, get_busy_day
+from .charts import get_monthly_timeline, get_daily_timeline, get_busy_day, get_busy_month, get_weekly_heatmap, get_common_words, get_emoji
+
+def emoji_api(request):
+    """API for emoji chart using selected_user from session"""
+    emojis = get_emoji(request)
+    
+    top_emojis = emojis.head(10)
+
+    data = {
+        "emoji": top_emojis[0].tolist(),  # X-axis: Weekdays
+        "emoji_count": top_emojis[1].tolist()  # Y-axis: Message counts
+    }
+    print("Top 10 EMOJIS:\n", top_emojis)
+    print("Data Type:", type(top_emojis))
+    print("DATA:\n", data)
+    return JsonResponse(data,safe=False)
+
+
+
+def common_words_api(request):
+    """API for most common words chart using selected_user from session"""
+    common_words = get_common_words(request)
+
+    # Structure data for JSON response
+    data = {
+        "word": common_words[0].tolist(),  # X-axis: Weekdays
+        "word_count": common_words[1].tolist()  # Y-axis: Message counts
+    }
+    return JsonResponse(data,safe=False)
+
+    
+
+
+
+def weekly_heatmap_api(request):
+    """API for weekly heatmap using selected_user from session"""
+    selected_user = request.session.get("selected_user", "Overall")  # Default to "Overall"
+    chat_data_json = request.session.get("chat_data")
+    df = pd.read_json(chat_data_json)
+
+    # ✅ Pass DataFrame to get_busy_month function and pivot table will be returned
+    weekly_heatmap = get_weekly_heatmap(selected_user, df)
+
+    return JsonResponse(weekly_heatmap, safe=False)
+
+
+def busy_month_api(request):
+    """API for most busy month chart using selected_user from session"""
+    selected_user = request.session.get("selected_user", "Overall")  # Default to "Overall"
+    chat_data_json = request.session.get("chat_data")
+    df = pd.read_json(chat_data_json)
+
+    # ✅ Pass DataFrame to get_busy_month function
+    month_counts = get_busy_month(selected_user, df)
+ 
+    # Structure data for JSON response
+    data = {
+        "labels": month_counts.index.tolist(),  # X-axis: Weekdays
+        "messages": month_counts.values.tolist()  # Y-axis: Message counts
+    }
+    return JsonResponse(data)
 
 
 def busy_day_api(request):
@@ -16,7 +76,7 @@ def busy_day_api(request):
     chat_data_json = request.session.get("chat_data")
     df = pd.read_json(chat_data_json)
     
-    # ✅ Pass DataFrame to timeline function
+    # ✅ Pass DataFrame to get_busy_day function
     week_counts = get_busy_day(selected_user, df) 
     
     # Structure data for JSON response
@@ -25,10 +85,6 @@ def busy_day_api(request):
         "messages": week_counts.values.tolist()  # Y-axis: Message counts
     }
     return JsonResponse(data)
-
-    
-def busy_month_api(request):
-    pass
 
 
 def daily_timeline_api(request):

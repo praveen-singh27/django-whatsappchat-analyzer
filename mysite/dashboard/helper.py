@@ -3,6 +3,8 @@ from wordcloud import WordCloud
 import pandas as pd
 from collections import Counter
 import emoji
+import os
+from django.conf import settings
 
 extract = URLExtract()
 
@@ -58,10 +60,12 @@ def create_wordcloud(selected_user,df):
     df_wc = wc.generate(temp['message'].str.cat(sep=" "))
     return df_wc
 
-def most_common_words(selected_user,df):
+def most_common_words(selected_user,df): # Modified 25-02-2025
 
-    f = open('stop_hinglish.txt','r')
-    stop_words = f.read()
+    stop_words_path = os.path.join(settings.BASE_DIR, 'dashboard', 'stop_hinglish.txt')
+
+    with open(stop_words_path, 'r', encoding='utf-8') as f:
+        stop_words = f.read()
 
     if selected_user != 'Overall':
         df = df[df['user'] == selected_user]
@@ -129,14 +133,24 @@ def month_activity_map(selected_user,df):
 
     return df['month'].value_counts()
 
-def activity_heatmap(selected_user,df):
+def activity_heatmap(selected_user,df): # Modified 25-02-2025
 
     if selected_user != 'Overall':
         df = df[df['user'] == selected_user]
 
     user_heatmap = df.pivot_table(index='day_name', columns='period', values='message', aggfunc='count').fillna(0)
 
-    return user_heatmap
+    # Convert the heatmap into the required format
+    heatmap_data = []
+    for day, row in user_heatmap.iterrows():
+        for period, count in row.items():
+            heatmap_data.append({
+                "x": int(period.split('-')[0]),  # Extract numeric hour
+                "y": day,  # Day of the week
+                "v": int(count)  # Message count
+            })
+
+    return heatmap_data
 
 
 
