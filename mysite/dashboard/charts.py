@@ -52,6 +52,8 @@ def get_common_words(request):
     selected_user = request.session.get("selected_user", "Overall")  # Default to "Overall"
     chat_data_json = request.session.get("chat_data")
     df = pd.read_json(chat_data_json)
+
+    
     common_words = most_common_words(selected_user, df)
 
     return common_words

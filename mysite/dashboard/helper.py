@@ -5,6 +5,7 @@ from collections import Counter
 import emoji
 import os
 from django.conf import settings
+import re
 
 extract = URLExtract()
 
@@ -60,28 +61,33 @@ def create_wordcloud(selected_user,df):
     df_wc = wc.generate(temp['message'].str.cat(sep=" "))
     return df_wc
 
-def most_common_words(selected_user,df): # Modified 25-02-2025
-
+def most_common_words(selected_user, df):
     stop_words_path = os.path.join(settings.BASE_DIR, 'dashboard', 'stop_hinglish.txt')
+    # Load stop words
+    with open(stop_words_path, 'r') as f:
+        stop_words = f.read().split()
 
-    with open(stop_words_path, 'r', encoding='utf-8') as f:
-        stop_words = f.read()
-
+    # Filter user-specific messages
     if selected_user != 'Overall':
         df = df[df['user'] == selected_user]
 
-    temp = df[df['user'] != 'group_notification']
-    temp = temp[temp['message'] != '<Media omitted>\n']
+    # Remove group notifications and media messages
+    temp = df[(df['user'] != 'group_notification') & (df['message'] != '<Media omitted>\n')]
 
     words = []
 
+    # Extract words
     for message in temp['message']:
         for word in message.lower().split():
-            if word not in stop_words:
+            # Keep only words (removes symbols, numbers, etc.)
+            if word not in stop_words and re.match(r"^[a-zA-Z]+$", word):
                 words.append(word)
 
-    most_common_df = pd.DataFrame(Counter(words).most_common(20))
+    # Get most common words
+    most_common_df = pd.DataFrame(Counter(words).most_common(20), columns=['Word', 'Frequency'])
+    
     return most_common_df
+
 
 def emoji_helper(selected_user,df):
     if selected_user != 'Overall':

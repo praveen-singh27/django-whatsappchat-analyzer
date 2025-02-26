@@ -19,11 +19,8 @@ def emoji_api(request):
         "emoji": top_emojis[0].tolist(),  # X-axis: Weekdays
         "emoji_count": top_emojis[1].tolist()  # Y-axis: Message counts
     }
-    print("Top 10 EMOJIS:\n", top_emojis)
-    print("Data Type:", type(top_emojis))
-    print("DATA:\n", data)
-    return JsonResponse(data,safe=False)
 
+    return JsonResponse(data,safe=False)
 
 
 def common_words_api(request):
@@ -32,8 +29,8 @@ def common_words_api(request):
 
     # Structure data for JSON response
     data = {
-        "word": common_words[0].tolist(),  # X-axis: Weekdays
-        "word_count": common_words[1].tolist()  # Y-axis: Message counts
+        "word": common_words['Word'].tolist(),  # X-axis: Weekdays
+        "word_count": common_words['Frequency'].tolist()  # Y-axis: Message counts
     }
     return JsonResponse(data,safe=False)
 
@@ -122,7 +119,7 @@ def monthly_timeline_api(request):
     # print("🚀 DataFrame:\n", df.head())
     # print("🚀 Columns:", df.columns)
 
-    # ✅ Pass DataFrame to timeline function
+    # ✅ Pass DataFrame to timeline function which is present in charts.py file
     timeline_data = get_monthly_timeline(selected_user, df)  
 
     # 🔍 Debugging: Check returned data
@@ -186,30 +183,35 @@ def get_stats(request):
     context = {}  # Dictionary to store data for Jinja2 template
 
     if request.method == "POST":
+        # Case 1: File Upload
         if "chatFile" in request.FILES:
+             # ✅ This message is shown only when a file is uploaded
             messages.success(request, " ✅ WhatsApp Chat File Uploaded Successfully! ")
-            # Handle file upload
+
+            # Read the uploaded file
             chat_file = request.FILES["chatFile"]
             data = chat_file.read().decode("utf-8")  # Read file content
 
             df = preprocess.preprocess(data)  # Convert raw chat data into a pandas DataFrame
-            request.session["chat_data"] = df.to_json()  # Store in session (Avoid DB)
+            request.session["chat_data"] = df.to_json()  # Store uploaded chat data in session
 
             # Extract unique users
             users = sorted(df["user"].unique().tolist())
             if "group_notification" in users:
                 users.remove("group_notification")
             users.insert(0, "Overall")  # Add "Overall" as the first option
-
+            
+            # Store the list of users in session so it persists across requests
             request.session["users"] = users  # Store users in session
             context["users"] = users  # Pass users to template
 
+        # Case 2: User selection from dropdown (Not a file upload)
         elif "selected_user" in request.POST:
-            # Handle user selection from dropdown
+            # Get the selected user from form data, or fallback to session
             selected_user = request.POST.get("selected_user", request.session.get("selected_user"))
-            request.session["selected_user"] = selected_user  # Store in session
+            request.session["selected_user"] = selected_user  # Store selected_user in session
 
-            
+            # Load chat data from session (since no new file was uploaded)
             df = pd.read_json(request.session.get("chat_data"))  # Retrieve session data
 
             # Fetch chat statistics using helper functions
@@ -223,19 +225,26 @@ def get_stats(request):
                 "links_shared": num_links,
             }
             
-             # Store stats in session so they persist
+            # Store statistics in session so they persist across page refreshest
             request.session["session_stats"] = stats
 
-            # Retrieve users from session so dropdown persists
+            # Retrieve users from session so the dropdown persists
             users = request.session.get("users", [])
 
-            context.update(stats)
+            # Update context with stats and user list for rendering
+            context.update(stats) 
             context["users"] = users 
 
-    # Retrieve existing stats from session if available (to persist after refresh)
+    # Case 3: Page refresh - Retrieve stored stats from session (if available)
     elif "session_stats" in request.session:
+        # Load statistics from session to maintain state
         context.update(request.session.get("session_stats", {}))
         context["selected_user"] = request.session.get("selected_user", "Overall")  # Default to "Overall"
         context["users"] = request.session.get("users", [])  # Ensure users dropdown persists
+
+    # 🔥 Why isn't the success message appearing when clicking "Show Analysis"?
+    # → The message is only added when a file is uploaded (inside `if "chatFile" in request.FILES`).
+    # → When selecting a user, a new request is sent, but the success message is not re-added.
+    # → Django's default message storage clears messages after the next request-response cycle.
 
     return render(request, "dashboard/dashboard.html", context)
