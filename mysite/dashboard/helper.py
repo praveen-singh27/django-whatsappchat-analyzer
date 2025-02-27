@@ -67,6 +67,9 @@ def most_common_words(selected_user, df):
     with open(stop_words_path, 'r') as f:
         stop_words = f.read().split()
 
+    # Add 'deleted' to stop words list (to exclude it) or directly add in 'stop_hinglish.txt'
+    stop_words.extend(['deleted', 'message'])
+
     # Filter user-specific messages
     if selected_user != 'Overall':
         df = df[df['user'] == selected_user]
